@@ -37,9 +37,21 @@ fn main() {
 
     let orthotable_path = args.value_of("orthotable").unwrap();
 
-    let orthotable =
-        read_ortholog_matrix(orthotable_path).expect("Unable to read csv to DataFrame.");
+    let mut orthotable = read_ortholog_matrix(orthotable_path)
+        .expect("Unable to read csv to DataFrame.")
+        .transpose()
+        .expect("Unable to transpose DataFrame.");
+
+    let new_columns: Vec<polars::datatypes::AnyValue> = orthotable.get(0).unwrap();
+
+    println!("{:?}", new_columns);
+
+    //orthotable
+    //    .set_column_names(&new_columns)
+    //    .expect("Unable to rename columns.");
     let ncol = orthotable.shape();
+
+    println!("{:?}", orthotable);
 
     let mut csvrdr = csv::ReaderBuilder::new()
         .delimiter(b'\t')
@@ -57,7 +69,7 @@ fn main() {
             println!("{:?}", r)
         }
         */
-
+        /*)
         for i in 1..ncol.1 {
             for row_spl in orthotable
                 .select_at_idx(i)
@@ -73,5 +85,6 @@ fn main() {
                 }
             }
         }
+        */
     }
 }
