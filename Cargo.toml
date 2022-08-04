@@ -10,4 +10,6 @@ bio = {git = "https://github.com/rust-bio/rust-bio"}
 clap = "3.2.12"
 csv = "1.1.6"
 serde = "1.0.142"
-calamine = "0.18.0"
+polars-core = "0.22.7"
+polars-io = "0.22.7"
+polars = "0.22.8"
