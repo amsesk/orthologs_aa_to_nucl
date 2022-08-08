@@ -37,18 +37,30 @@ fn main() {
 
     let orthotable_path = args.value_of("orthotable").unwrap();
 
-    let mut orthotable = read_ortholog_matrix(orthotable_path)
-        .expect("Unable to read csv to DataFrame.")
+    let mut orthotable =
+        read_ortholog_matrix(orthotable_path).expect("Unable to read csv to DataFrame.");
+    let markers = orthotable.get_column_names().to_owned();
+    let ltps = orthotable.select_series("LTP");
+    println!("{:?}", orthotable);
+    orthotable = orthotable
         .transpose()
         .expect("Unable to transpose DataFrame.");
 
-    let new_columns: Vec<polars::datatypes::AnyValue> = orthotable.get(0).unwrap();
+    let new_columns: Vec<String> = orthotable
+        .get(0)
+        .unwrap()
+        .iter()
+        .map(|x| x.to_string())
+        .collect::<Vec<String>>();
+    let new_columns_unquoted = new_columns
+        .iter()
+        .map(|x| &x[1..x.len() - 1])
+        .collect::<Vec<&str>>();
 
-    println!("{:?}", new_columns);
-
-    //orthotable
-    //    .set_column_names(&new_columns)
-    //    .expect("Unable to rename columns.");
+    orthotable
+        .set_column_names(&new_columns_unquoted)
+        .expect("Unable to rename columns.");
+    let orthotable = orthotable.slice(1, orthotable.shape().0);
     let ncol = orthotable.shape();
 
     println!("{:?}", orthotable);
