@@ -12,4 +12,4 @@ csv = "1.1.6"
 serde = "1.0.142"
 polars-core = "0.22.7"
 polars-io = "0.22.7"
-polars = "0.22.8"
+polars = {version = "0.24.3", features = ["lazy", "strings"]}
