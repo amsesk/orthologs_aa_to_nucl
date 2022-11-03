@@ -91,6 +91,13 @@ fn main() {
                 .required(true),
         ).get_matches();
 
+    let mut multimatch_prots = OpenOptions::new()
+        .write(true)
+        .append(true)
+        .create(true)
+        .open("multimatch_prots.txt")
+        .expect("Unable to create output file at multimatch_prots.txt");
+
     let orthotable_path = args.value_of("orthotable").unwrap();
 
     let orthotable =
@@ -230,12 +237,13 @@ fn main() {
                                         */
                                 //match_list.push(search.column("marker").iter().collect()),
                             }
-                            _ => println!(
-                                "Protein {} corresponds to >1 marker, so skipping:\n {:?}",
-                                prot_id, search
-                            ),
+                            _ => {
+                                multimatch_prots
+                                    .write(format!("{}|{}\n", ltp, prot_id).as_bytes())
+                                    .unwrap();
+                            }
                         }
-                    };
+                    }
                 }
                 Err(_) => {
                     // Break because this means we are down at the FASTA portion of the prodigal GFF
